@@ -32,6 +32,9 @@ class EmployeeService {
     }
   }
 
+  /// Gets the cache instance.
+  EmployeeDataCache cache() => _cache;
+
   /// Clears the local cache.
   Future<void> refresh() => _cache.drop();
 
