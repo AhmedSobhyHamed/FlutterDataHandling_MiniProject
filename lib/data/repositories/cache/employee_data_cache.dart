@@ -1,20 +1,19 @@
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
+import '../../../core/local_storage.dart';
 import '../../models/employee.dart';
 import '../employee_data.dart';
 
 class EmployeeDataCache implements EmployeeData {
-  EmployeeDataCache(this._preferences);
+  EmployeeDataCache(this._storage);
 
-  final SharedPreferences _preferences;
+  final LocalStorage _storage;
 
   static const _employeesKey = 'cached_employees';
 
   @override
   Future<List<Employee>> getList() async {
-    final raw = _preferences.getString(_employeesKey);
+    final raw = _storage.getString(_employeesKey);
     if (raw == null) return [];
 
     final decoded = jsonDecode(raw) as List<dynamic>;
@@ -36,12 +35,12 @@ class EmployeeDataCache implements EmployeeData {
     final encoded = jsonEncode(
       employees.map((employee) => employee.toJson()).toList(),
     );
-    await _preferences.setString(_employeesKey, encoded);
+    await _storage.setString(_employeesKey, encoded);
   }
 
-  bool hasCache() => _preferences.containsKey(_employeesKey);
+  bool hasCache() => _storage.containsKey(_employeesKey);
 
   Future<void> drop() async {
-    await _preferences.remove(_employeesKey);
+    await _storage.remove(_employeesKey);
   }
 }
