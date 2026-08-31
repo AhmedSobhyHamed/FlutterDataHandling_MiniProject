@@ -17,6 +17,7 @@ class EmployeeTile extends StatelessWidget {
     return ListTile(
       leading: CircleAvatar(child: Text('${employee.id}')),
       title: Text(employee.employeeName),
+      subtitle: Text(employee.employeeSalary.toString()),
       trailing: _PostImage(imageUrl: employee.profileImage),
       onTap: onTap,
     );
