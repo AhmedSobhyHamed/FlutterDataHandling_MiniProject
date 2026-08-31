@@ -34,7 +34,7 @@ flutter doctor
 ## Clone the project
 
 ```bash
-git clone <REPO_URL>
+git clone https://github.com/AhmedSobhyHamed/FlutterDataHandling_MiniProject.git
 cd FlutterDataHandling_MiniProject
 ```
 
