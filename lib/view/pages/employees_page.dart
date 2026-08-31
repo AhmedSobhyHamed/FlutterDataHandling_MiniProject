@@ -15,19 +15,15 @@ class EmployeesPage extends StatefulWidget {
 }
 
 class _EmployeesPageState extends State<EmployeesPage> {
-  late Future<List<Employee>> _employeesFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _employeesFuture = widget.employeeService.getList();
-  }
+  Future<List<Employee>>? _employeesFuture;
 
   Future<void> _load({bool fresh = false}) async {
     final future = fresh
         ? widget.employeeService.freshList()
         : widget.employeeService.getList();
-    setState(() => _employeesFuture = future);
+    setState(() {
+      _employeesFuture = future;
+    });
     await future;
   }
 
@@ -48,31 +44,43 @@ class _EmployeesPageState extends State<EmployeesPage> {
       appBar: AppBar(
         title: const Text('Employees'),
         actions: [
-          IconButton(
-            tooltip: 'Refresh',
-            icon: const Icon(Icons.refresh),
-            onPressed: () => _load(fresh: true),
-          ),
+          if (_employeesFuture != null)
+            IconButton(
+              tooltip: 'Refresh',
+              icon: const Icon(Icons.refresh),
+              onPressed: () => _load(fresh: true),
+            ),
         ],
       ),
-      body: FutureBuilder<List<Employee>>(
-        future: _employeesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: _employeesFuture == null
+          ? _loadButton()
+          : FutureBuilder<List<Employee>>(
+              future: _employeesFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-          if (snapshot.hasError) {
-            return _errorView();
-          }
+                if (snapshot.hasError) {
+                  return _errorView();
+                }
 
-          final employees = snapshot.data ?? [];
-          if (employees.isEmpty) {
-            return const Center(child: Text('No employees'));
-          }
+                final employees = snapshot.data ?? [];
+                if (employees.isEmpty) {
+                  return const Center(child: Text('No employees'));
+                }
 
-          return _employeesList(employees);
-        },
+                return _employeesList(employees);
+              },
+            ),
+    );
+  }
+
+  Widget _loadButton() {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () => _load(),
+        child: const Text('Load employees'),
       ),
     );
   }
@@ -85,7 +93,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
           const Text('Could not load employees'),
           const SizedBox(height: 8),
           TextButton(
-            onPressed: _load,
+            onPressed: () => _load(),
             child: const Text('Retry'),
           ),
         ],

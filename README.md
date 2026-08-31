@@ -11,6 +11,9 @@ Flutter app that lists employees from a remote API, caches them locally, and sho
 ![App preview](.git_images/app1.png)
 ![App preview](.git_images/app2.png)
 ![App preview](.git_images/app3.png)
+![App preview](.git_images/app4.png)
+![App preview](.git_images/app5.png)
+![App preview](.git_images/app6.png)
 
 ---
 
